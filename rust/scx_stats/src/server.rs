@@ -280,6 +280,27 @@ where
         self.visit_meta(self.top.as_ref().unwrap(), &mut |_| Ok(()))
     }
 
+    pub fn describe_nstats_meta<W: Write>(
+        &self,
+        w: &mut W,
+        stats_meta_names: Option<&[&str]>,
+    ) -> Result<()> {
+        let meta_names = match stats_meta_names {
+            Some(v) => v,
+            None => {
+                return Err(anyhow!(
+                    "Expected stats meta names to look up in server data"
+                ))
+            }
+        };
+
+        for meta_name in meta_names {
+            self.describe_meta(w, Some(meta_name))?;
+        }
+
+        Ok(())
+    }
+
     pub fn describe_meta<W: Write>(&self, w: &mut W, from: Option<&str>) -> Result<()> {
         let from = match from {
             Some(v) => v,
